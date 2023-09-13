@@ -1,33 +1,33 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import './App.scss';
 import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+import { useClipboard } from 'use-clipboard-copy';
 
 function App() {
-    const [string, setString] = useState('');
-    const [result, setResult] = useState('');
+    const [inputString, setInputString] = useState('');
+    const [resultString, setResultString] = useState('');
 
     const separators = [' | ', ' ', ', ', '; '];
     const [separator, setSeparator] = useState(separators[0]);
 
+    const clipboard = useClipboard();
+
     const cleanString = (value) => {
-        const str = value.replace(/\s+/g, ' ').trim();
+        const str = value
+            .replace(/\|/g, ' ')
+            .trim()
+            .replace(/\s+/g, separator)
+            .trim();
 
-        switch (separator) {
-            case separators[0]:
-                setResult(str.replace(/ /g, separator));
-                break;
-
-            default:
-                setResult(str);
-                break;
-        }
+        setResultString(str);
     };
 
     const handleInputChange = (event) => {
         const value = event.target.value;
 
-        setString(value);
         cleanString(value);
+        setInputString(value);
     };
 
     const handleRadioChange = (event) => {
@@ -35,8 +35,12 @@ function App() {
     };
 
     useEffect(() => {
-        cleanString(string);
+        cleanString(inputString);
     }, [separator]);
+
+    const copyResultToClipboard = useCallback(() => {
+        clipboard.copy(resultString); // programmatically copying a value
+    }, [clipboard.copy, resultString]);
 
     return (
         <div className="App">
@@ -47,7 +51,7 @@ function App() {
                         as="textarea"
                         rows={3}
                         onChange={(e) => handleInputChange(e)}
-                        value={string}
+                        value={inputString}
                     />
                 </Form.Group>
 
@@ -101,9 +105,12 @@ function App() {
                         as="textarea"
                         rows={3}
                         disabled
-                        value={result}
+                        value={resultString}
                     />
                 </Form.Group>
+                <Button variant="primary" onClick={copyResultToClipboard}>
+                    Copy result
+                </Button>
             </Form>
         </div>
     );
