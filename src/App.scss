@@ -1,0 +1,15 @@
+@import 'reset.scss';
+@import '~bootstrap/scss/bootstrap';
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: lightgray;
+    padding: 50px;
+    font-size: 18px;
+
+    .form {
+        width: 1000px;
+    }
+}
