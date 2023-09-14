@@ -12,4 +12,12 @@ body {
     .form {
         width: 1000px;
     }
+
+    .note {
+        font-size: 14px;
+
+        span {
+            color: red;
+        }
+    }
 }

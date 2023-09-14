@@ -3,21 +3,30 @@ import './App.scss';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { useClipboard } from 'use-clipboard-copy';
+import ToggleButton from 'react-bootstrap/ToggleButton';
+import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup';
 
 function App() {
     const [inputString, setInputString] = useState('');
     const [resultString, setResultString] = useState('');
 
-    const separators = [' | ', ' ', ', ', '; '];
-    const [separator, setSeparator] = useState(separators[0]);
+    const separators = [
+        { separatorSymbol: ' | ', separatorName: 'Вертикальная линия' },
+        { separatorSymbol: ' ', separatorName: 'Пробел' },
+        { separatorSymbol: ', ', separatorName: 'Запятая' },
+        { separatorSymbol: '; ', separatorName: 'Точка с запятой' },
+    ];
+    const [currentSeparator, setCurrentSeparator] = useState(
+        separators[0].separatorSymbol
+    );
 
     const clipboard = useClipboard();
 
     const cleanString = (value) => {
         const str = value
-            .replace(/\|/g, ' ')
+            .replace(/\|/g, separators[1].separatorSymbol)
             .trim()
-            .replace(/\s+/g, separator)
+            .replace(/\s+/g, currentSeparator)
             .trim();
 
         setResultString(str);
@@ -31,22 +40,24 @@ function App() {
     };
 
     const handleRadioChange = (event) => {
-        setSeparator(event.target.value);
+        setCurrentSeparator(event.target.value);
     };
 
     useEffect(() => {
         cleanString(inputString);
-    }, [separator]);
+    }, [currentSeparator]);
 
     const copyResultToClipboard = useCallback(() => {
-        clipboard.copy(resultString); // programmatically copying a value
+        clipboard.copy(resultString);
     }, [clipboard.copy, resultString]);
 
     return (
         <div className="App">
             <Form className="form">
                 <Form.Group className="mb-3">
-                    <Form.Label>String</Form.Label>
+                    <Form.Label>
+                        <h4>Исходная строка</h4>
+                    </Form.Label>
                     <Form.Control
                         as="textarea"
                         rows={3}
@@ -55,52 +66,31 @@ function App() {
                     />
                 </Form.Group>
 
-                <p>Separator</p>
+                <h4 className="mb-3">Разделитель</h4>
 
-                {['radio'].map((type) => (
-                    <div key={`inline-${type}`} className="mb-3">
-                        <Form.Check
-                            inline
-                            label="|"
-                            name="group1"
-                            type={type}
-                            id={`inline-${type}-1`}
-                            defaultChecked
-                            value={separators[0]}
-                            onChange={(e) => handleRadioChange(e)}
-                        />
-                        <Form.Check
-                            inline
-                            label="Space"
-                            name="group1"
-                            type={type}
-                            id={`inline-${type}-2`}
-                            value={separators[1]}
-                            onChange={(e) => handleRadioChange(e)}
-                        />
-                        {/* <Form.Check
-                            inline
-                            label=","
-                            name="group1"
-                            type={type}
-                            id={`inline-${type}-3`}
-                            value={separators[2]}
-                            onChange={(e) => setSeparator(e.target.value)}
-                        />
-                        <Form.Check
-                            inline
-                            label=";"
-                            name="group1"
-                            type={type}
-                            id={`inline-${type}-4`}
-                            value={separators[3]}
-                            onChange={(e) => setSeparator(e.target.value)}
-                        /> */}
-                    </div>
-                ))}
+                <ToggleButtonGroup
+                    type="radio"
+                    name="options"
+                    defaultValue={separators[0].separatorSymbol}
+                    className="mb-3"
+                >
+                    {separators.map((separator, i) => {
+                        return (
+                            <ToggleButton
+                                id={`tbg-radio-${i}`}
+                                value={separator.separatorSymbol}
+                                onChange={(e) => handleRadioChange(e)}
+                            >
+                                {separator.separatorName}
+                            </ToggleButton>
+                        );
+                    })}
+                </ToggleButtonGroup>
 
                 <Form.Group className="mb-3">
-                    <Form.Label>Result</Form.Label>
+                    <Form.Label>
+                        <h4>Результат</h4>
+                    </Form.Label>
                     <Form.Control
                         as="textarea"
                         rows={3}
@@ -109,9 +99,14 @@ function App() {
                     />
                 </Form.Group>
                 <Button variant="primary" onClick={copyResultToClipboard}>
-                    Copy result
+                    Копировать в буфер обмена
                 </Button>
             </Form>
+
+            <p className="mt-4 note">
+                <span>*</span> Лишние пробелы и вертикальные линии автоматически
+                удаляются, но запятые, точки и прочие разделители не изменяются.
+            </p>
         </div>
     );
 }
