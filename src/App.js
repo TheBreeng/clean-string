@@ -10,23 +10,23 @@ function App() {
     const [inputString, setInputString] = useState('');
     const [resultString, setResultString] = useState('');
 
-    const separators = [
-        { separatorSymbol: ' | ', separatorName: 'Вертикальная линия' },
-        { separatorSymbol: ' ', separatorName: 'Пробел' },
-        { separatorSymbol: ', ', separatorName: 'Запятая' },
-        { separatorSymbol: '; ', separatorName: 'Точка с запятой' },
+    const delimiters = [
+        { delimiterSymbol: ' | ', delimiterName: 'Вертикальная линия' },
+        { delimiterSymbol: ' ', delimiterName: 'Пробел' },
+        { delimiterSymbol: ', ', delimiterName: 'Запятая' },
+        { delimiterSymbol: '; ', delimiterName: 'Точка с запятой' },
     ];
-    const [currentSeparator, setCurrentSeparator] = useState(
-        separators[0].separatorSymbol
+    const [currentdelimiter, setCurrentdelimiter] = useState(
+        delimiters[0].delimiterSymbol
     );
 
     const clipboard = useClipboard();
 
     const cleanString = (value) => {
         const str = value
-            .replace(/\|/g, separators[1].separatorSymbol)
+            .replace(/\|/g, delimiters[1].delimiterSymbol)
             .trim()
-            .replace(/\s+/g, currentSeparator)
+            .replace(/\s+/g, currentdelimiter)
             .trim();
 
         setResultString(str);
@@ -40,12 +40,14 @@ function App() {
     };
 
     const handleRadioChange = (event) => {
-        setCurrentSeparator(event.target.value);
+        const value = event.target.value;
+
+        setCurrentdelimiter(value);
     };
 
     useEffect(() => {
         cleanString(inputString);
-    }, [currentSeparator]);
+    }, [currentdelimiter]);
 
     const copyResultToClipboard = useCallback(() => {
         clipboard.copy(resultString);
@@ -71,17 +73,17 @@ function App() {
                 <ToggleButtonGroup
                     type="radio"
                     name="options"
-                    defaultValue={separators[0].separatorSymbol}
+                    defaultValue={delimiters[0].delimiterSymbol}
                     className="mb-3"
                 >
-                    {separators.map((separator, i) => {
+                    {delimiters.map((delimiter, i) => {
                         return (
                             <ToggleButton
                                 id={`tbg-radio-${i}`}
-                                value={separator.separatorSymbol}
+                                value={delimiter.delimiterSymbol}
                                 onChange={(e) => handleRadioChange(e)}
                             >
-                                {separator.separatorName}
+                                {delimiter.delimiterName}
                             </ToggleButton>
                         );
                     })}
