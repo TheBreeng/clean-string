@@ -5,6 +5,7 @@ import Button from 'react-bootstrap/Button';
 import { useClipboard } from 'use-clipboard-copy';
 import ToggleButton from 'react-bootstrap/ToggleButton';
 import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup';
+import { Container, Row, Col } from 'react-bootstrap';
 
 function App() {
     const [inputString, setInputString] = useState('');
@@ -55,60 +56,73 @@ function App() {
 
     return (
         <div className="App">
-            <Form className="form">
-                <Form.Group className="mb-3">
-                    <Form.Label>
-                        <h4>Исходная строка</h4>
-                    </Form.Label>
-                    <Form.Control
-                        as="textarea"
-                        rows={3}
-                        onChange={(e) => handleInputChange(e)}
-                        value={inputString}
-                    />
-                </Form.Group>
+            <Container className="mt-5">
+                <Row>
+                    <Col>
+                        <Form className="form">
+                            <Form.Group className="mb-3">
+                                <Form.Label>
+                                    <h4>Исходная строка</h4>
+                                </Form.Label>
+                                <Form.Control
+                                    as="textarea"
+                                    rows={3}
+                                    onChange={(e) => handleInputChange(e)}
+                                    value={inputString}
+                                />
+                            </Form.Group>
 
-                <h4 className="mb-3">Разделитель</h4>
+                            <h4 className="mb-3">Разделитель</h4>
 
-                <ToggleButtonGroup
-                    type="radio"
-                    name="options"
-                    defaultValue={delimiters[0].delimiterSymbol}
-                    className="mb-3"
-                >
-                    {delimiters.map((delimiter, i) => {
-                        return (
-                            <ToggleButton
-                                id={`tbg-radio-${i}`}
-                                value={delimiter.delimiterSymbol}
-                                onChange={(e) => handleRadioChange(e)}
+                            <ToggleButtonGroup
+                                type="radio"
+                                name="options"
+                                defaultValue={delimiters[0].delimiterSymbol}
+                                className="mb-3"
                             >
-                                {delimiter.delimiterName}
-                            </ToggleButton>
-                        );
-                    })}
-                </ToggleButtonGroup>
+                                {delimiters.map((delimiter, i) => {
+                                    return (
+                                        <ToggleButton
+                                            id={`tbg-radio-${i}`}
+                                            value={delimiter.delimiterSymbol}
+                                            onChange={(e) =>
+                                                handleRadioChange(e)
+                                            }
+                                            key={i}
+                                        >
+                                            {delimiter.delimiterName}
+                                        </ToggleButton>
+                                    );
+                                })}
+                            </ToggleButtonGroup>
 
-                <Form.Group className="mb-3">
-                    <Form.Label>
-                        <h4>Результат</h4>
-                    </Form.Label>
-                    <Form.Control
-                        as="textarea"
-                        rows={3}
-                        disabled
-                        value={resultString}
-                    />
-                </Form.Group>
-                <Button variant="primary" onClick={copyResultToClipboard}>
-                    Копировать в буфер обмена
-                </Button>
-            </Form>
+                            <Form.Group className="mb-3">
+                                <Form.Label>
+                                    <h4>Результат</h4>
+                                </Form.Label>
+                                <Form.Control
+                                    as="textarea"
+                                    rows={3}
+                                    disabled
+                                    value={resultString}
+                                />
+                            </Form.Group>
+                            <Button
+                                variant="primary"
+                                onClick={copyResultToClipboard}
+                            >
+                                Копировать в буфер обмена
+                            </Button>
+                        </Form>
 
-            <p className="mt-4 note">
-                <span>*</span> Лишние пробелы и вертикальные линии автоматически
-                удаляются, но запятые, точки и прочие разделители не изменяются.
-            </p>
+                        <p className="mt-4 note">
+                            <span>*</span> Лишние пробелы и вертикальные линии
+                            автоматически удаляются, но запятые, точки и прочие
+                            разделители не изменяются.
+                        </p>
+                    </Col>
+                </Row>
+            </Container>
         </div>
     );
 }
