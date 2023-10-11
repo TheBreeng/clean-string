@@ -18,7 +18,7 @@ function App() {
         { delimiterSymbol: '; ', delimiterName: 'Точка с запятой' },
     ];
     const [currentdelimiter, setCurrentdelimiter] = useState(
-        delimiters[0].delimiterSymbol
+        localStorage.getItem('delimeter') || delimiters[0].delimiterSymbol
     );
 
     const clipboard = useClipboard();
@@ -42,8 +42,8 @@ function App() {
 
     const handleRadioChange = (event) => {
         const value = event.target.value;
-
-        setCurrentdelimiter(value);
+        localStorage.setItem('delimeter', value);
+        setCurrentdelimiter(localStorage.getItem('delimeter'));
     };
 
     useEffect(() => {
@@ -77,23 +77,25 @@ function App() {
                             <ToggleButtonGroup
                                 type="radio"
                                 name="options"
-                                defaultValue={delimiters[0].delimiterSymbol}
+                                defaultValue={currentdelimiter}
                                 className="mb-3"
                             >
-                                {delimiters.map((delimiter, i) => {
-                                    return (
-                                        <ToggleButton
-                                            id={`tbg-radio-${i}`}
-                                            value={delimiter.delimiterSymbol}
-                                            onChange={(e) =>
-                                                handleRadioChange(e)
-                                            }
-                                            key={i}
-                                        >
-                                            {delimiter.delimiterName}
-                                        </ToggleButton>
-                                    );
-                                })}
+                                {delimiters.map(
+                                    ({ delimiterSymbol, delimiterName }, i) => {
+                                        return (
+                                            <ToggleButton
+                                                id={`tbg-radio-${i}`}
+                                                value={delimiterSymbol}
+                                                onChange={(e) =>
+                                                    handleRadioChange(e)
+                                                }
+                                                key={i}
+                                            >
+                                                {delimiterName}
+                                            </ToggleButton>
+                                        );
+                                    }
+                                )}
                             </ToggleButtonGroup>
 
                             <Form.Group className="mb-3">
