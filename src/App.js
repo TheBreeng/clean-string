@@ -54,6 +54,11 @@ function App() {
         clipboard.copy(resultString);
     }, [clipboard.copy, resultString]);
 
+    const clearFields = () => {
+        setInputString('');
+        setResultString('');
+    };
+
     return (
         <div className="App">
             <Container className="mt-5">
@@ -71,6 +76,10 @@ function App() {
                                     value={inputString}
                                 />
                             </Form.Group>
+
+                            <Button className="mb-3" onClick={clearFields}>
+                                Очистить поля
+                            </Button>
 
                             <h4 className="mb-3">Разделитель</h4>
 
