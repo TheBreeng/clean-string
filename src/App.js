@@ -77,7 +77,7 @@ function App() {
                                 />
                             </Form.Group>
 
-                            <Button className="mb-3" onClick={clearFields}>
+                            <Button className="mb-4" onClick={clearFields}>
                                 Очистить поля
                             </Button>
 
@@ -87,7 +87,7 @@ function App() {
                                 type="radio"
                                 name="options"
                                 defaultValue={currentdelimiter}
-                                className="mb-3"
+                                className="mb-4"
                             >
                                 {delimiters.map(
                                     ({ delimiterSymbol, delimiterName }, i) => {
